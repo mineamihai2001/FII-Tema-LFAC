@@ -1,0 +1,27 @@
+	while (sizeNext < sizePop - (sizePop & 1))
+	{
+		nr = 0;
+		do
+		{
+			++nr;
+			pos1 = generator() % sizePop;
+			pos2 = generator() % sizePop;
+		} while (Population[pos1] == Population[pos2] && nr < limitChoise);
+		children = Cross_Over(Population[pos1], Population[pos2]);
+		newPop.push_back(children.first);
+		newPop.push_back(children.second);
+		sizeNext += 2;
+	}
+	if (sizePop % 2)
+	{
+		nr = 0;
+		do
+		{
+			++nr;
+			pos1 = generator() % sizePop;
+			pos2 = generator() % sizePop;
+		} while (Population[pos1] == Population[pos2] && nr < limitChoise);
+		children = Cross_Over(Population[pos1], Population[pos2]);
+		newPop.push_back(children.first);
+	}
+	Population = newPop;
