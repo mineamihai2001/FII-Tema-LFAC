@@ -9,6 +9,9 @@
 "class" {return CLASS;}
 "private" {return PRIVATE;}
 "public" {return PUBLIC;}
+"if" {return IF;}
+"while" {return WHILE;}
+"for" {return FOR;}
 "begin_progr" {return BGIN;}
 "end_progr" {return END;}
 [_a-zA-Z][_a-zA-Z0-9]* {return ID;}

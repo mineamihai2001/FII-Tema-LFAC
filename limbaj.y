@@ -4,7 +4,7 @@ extern FILE* yyin;
 extern char* yytext;
 extern int yylineno;
 %}
-%token ID TIP BGIN END ASSIGN NR RETURN CLASS PRIVATE PUBLIC
+%token ID TIP BGIN END ASSIGN NR RETURN CLASS PRIVATE PUBLIC IF WHILE FOR
 %left '+'
 %left '-'
 %left '*'
@@ -54,11 +54,22 @@ bloc : BGIN list END
 /* lista instructiuni */
 list :  statement ';' 
      | list statement ';'
+     | IF '(' condition ')' '{' list '}'
+     | list IF '(' condition ')' '{' list '}'
+     | WHILE '(' condition ')' '{' list '}'
+     | list WHILE '(' condition ')' '{' list '}'
+     | FOR '(' loop ')' '{' list '}'
+     | list FOR '(' loop ')' '{' list '}'     
      ;
 
 /* instructiune */
 statement : ID ASSIGN e		 
           | ID '(' lista_apel ')'
+          ;
+/* de rezolvat conditiile */
+loop : statement ';' condition ';' statement
+     ;
+condition : ID
           ;
 e : NR
   | ID

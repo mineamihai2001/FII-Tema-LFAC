@@ -58,7 +58,10 @@ extern int yydebug;
     RETURN = 264,
     CLASS = 265,
     PRIVATE = 266,
-    PUBLIC = 267
+    PUBLIC = 267,
+    IF = 268,
+    WHILE = 269,
+    FOR = 270
   };
 #endif
 /* Tokens.  */
@@ -72,6 +75,9 @@ extern int yydebug;
 #define CLASS 265
 #define PRIVATE 266
 #define PUBLIC 267
+#define IF 268
+#define WHILE 269
+#define FOR 270
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
