@@ -1,0 +1,21 @@
+int x;
+int y;
+int a[100];
+class object{
+private:
+    int x;
+    int z;
+public:
+    int y;
+    int afiseaza(){
+        x = 1;
+        return x;
+    }   
+};
+int f (){
+    z=43;
+    return z;
+}
+begin_progr
+x=1+2;
+end_progr
