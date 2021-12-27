@@ -4,7 +4,7 @@ extern FILE* yyin;
 extern char* yytext;
 extern int yylineno;
 %}
-%token ID TIP BGIN END ASSIGN NR RETURN CLASS PRIVATE PUBLIC IF WHILE FOR
+%token ID TIP MAIN END ASSIGN NR RETURN CLASS PRIVATE PUBLIC IF WHILE FOR
 %left '+'
 %left '-'
 %left '*'
@@ -48,7 +48,7 @@ clasa : CLASS ID '{' corp_clasa '}'
 corp_clasa : PRIVATE ':' declaratii PUBLIC ':' declaratii
            ;
 /* bloc */
-bloc : BGIN list END  
+bloc : MAIN '{' list '}'  
      ;
      
 /* lista instructiuni */

@@ -12,7 +12,7 @@
 "if" {return IF;}
 "while" {return WHILE;}
 "for" {return FOR;}
-"begin_progr" {return BGIN;}
+"main()" {return MAIN;}
 "end_progr" {return END;}
 [_a-zA-Z][_a-zA-Z0-9]* {return ID;}
 "=" {return ASSIGN;}

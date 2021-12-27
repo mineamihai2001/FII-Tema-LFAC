@@ -12,23 +12,25 @@ public:
         return x;
     }   
 };
-int f (){
+int f ()
+{
     z=43;
     return z;
 }
-begin_progr
-if(x){
-    x=1;
-}
-while(x){
-    x=1;
-}
-while(x){
-    x=1;
-}
-for(i=1;j;k=k+1)
+main()
 {
-    i=j+k;
+    if(x){
+        x=1;
+    }
+    while(x){
+        x=1;
+    }
+    while(x){
+        x=1;
+    }
+    for(i=1;j;k=k+1)
+    {
+        i=j+k;
+    }
+    x=1+2;
 }
-x=1+2;
-end_progr
