@@ -52,32 +52,30 @@ extern int yydebug;
     ID = 258,
     TIP = 259,
     MAIN = 260,
-    END = 261,
-    ASSIGN = 262,
-    NR = 263,
-    RETURN = 264,
-    CLASS = 265,
-    PRIVATE = 266,
-    PUBLIC = 267,
-    IF = 268,
-    WHILE = 269,
-    FOR = 270
+    ASSIGN = 261,
+    NR = 262,
+    RETURN = 263,
+    CLASS = 264,
+    PRIVATE = 265,
+    PUBLIC = 266,
+    IF = 267,
+    WHILE = 268,
+    FOR = 269
   };
 #endif
 /* Tokens.  */
 #define ID 258
 #define TIP 259
 #define MAIN 260
-#define END 261
-#define ASSIGN 262
-#define NR 263
-#define RETURN 264
-#define CLASS 265
-#define PRIVATE 266
-#define PUBLIC 267
-#define IF 268
-#define WHILE 269
-#define FOR 270
+#define ASSIGN 261
+#define NR 262
+#define RETURN 263
+#define CLASS 264
+#define PRIVATE 265
+#define PUBLIC 266
+#define IF 267
+#define WHILE 268
+#define FOR 269
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED

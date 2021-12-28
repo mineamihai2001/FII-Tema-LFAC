@@ -13,7 +13,6 @@
 "while" {return WHILE;}
 "for" {return FOR;}
 "main()" {return MAIN;}
-"end_progr" {return END;}
 [_a-zA-Z][_a-zA-Z0-9]* {return ID;}
 "=" {return ASSIGN;}
 [0-9]+ {return NR;}

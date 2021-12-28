@@ -4,15 +4,15 @@ extern FILE* yyin;
 extern char* yytext;
 extern int yylineno;
 %}
-%token ID TIP MAIN END ASSIGN NR RETURN CLASS PRIVATE PUBLIC IF WHILE FOR
+%token ID TIP MAIN ASSIGN NR RETURN CLASS PRIVATE PUBLIC IF WHILE FOR
 %left '+'
 %left '-'
 %left '*'
 %left '/'
 %start progr
 %%
-progr: declaratii bloc {printf("program corect sintactic\n");}
-     ;
+progr : declaratii bloc {printf("program corect sintactic\n");}
+      ;
 
 declaratii : declarare_aux
 	   | declaratii declarare_aux
@@ -41,11 +41,13 @@ lista_param : param
             ;
             
 param : TIP ID
+      | TIP ID '[' NR ']'
       ; 
 
 clasa : CLASS ID '{' corp_clasa '}'
       ;
 corp_clasa : PRIVATE ':' declaratii PUBLIC ':' declaratii
+           | declaratii PUBLIC ':' declaratii
            ;
 /* bloc */
 bloc : MAIN '{' list '}'  
@@ -59,14 +61,14 @@ list :  statement ';'
      | WHILE '(' condition ')' '{' list '}'
      | list WHILE '(' condition ')' '{' list '}'
      | FOR '(' loop ')' '{' list '}'
-     | list FOR '(' loop ')' '{' list '}'     
+     | list FOR '(' loop ')' '{' list '}'
      ;
 
 /* instructiune */
 statement : ID ASSIGN e		 
           | ID '(' lista_apel ')'
           ;
-/* de rezolvat conditiile */
+/* [[[[[de rezolvat conditiile]]]]] */
 loop : statement ';' condition ';' statement
      ;
 condition : ID
