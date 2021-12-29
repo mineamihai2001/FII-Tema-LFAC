@@ -13,7 +13,7 @@
 "while" {return WHILE;}
 "for" {return FOR;}
 "main()" {return MAIN;}
-[_a-zA-Z][_a-zA-Z0-9]* {return ID;}
+[_a-zA-Z][_a-zA-Z0-9]* {yylval.strval=strdup(yytext); return ID;}
 "=" {return ASSIGN;}
 [0-9]+ {yylval.intval = atoi(yytext); return NR;}
 [ \t] ;

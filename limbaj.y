@@ -9,7 +9,7 @@ extern char* yytext;
 extern int yylineno;
 
 expr_info* create_int_expr(int value);
-expr_info* create_str_expr(char* value1, char* value2);
+expr_info* create_str_expr(char* value1);
 void free_expr(expr_info* expr);
 void print_expr(expr_info* expr);
 %}
@@ -19,9 +19,8 @@ void print_expr(expr_info* expr);
       struct expr_info* expr_ptr;
 }
 %token TIP MAIN ASSIGN RETURN CLASS PRIVATE PUBLIC IF WHILE FOR ID
-%token <strval> STRING
 %token <intval> NR
-// %token <strval> ID 
+%token <strval> ID
 %type <expr_ptr> expr
 %type <expr_ptr> statement
 
@@ -89,11 +88,11 @@ condition : ID
           ;
 
 /* instructiune */
-statement : ID ASSIGN expr {print_expr($3);}
+statement : ID ASSIGN expr {$$ = create_str_expr($1); print_expr($3);}
           | ID '(' lista_apel ')'
           ;
 expr : NR {$$ = create_int_expr($1);}
-     | ID 
+     | ID
      | ID '(' lista_apel ')'
      | expr '+' expr {
                       $$ = create_int_expr($1->intvalue + $3->intvalue);
@@ -130,19 +129,13 @@ expr_info* create_int_expr(int value)
    return expr;
 }
 
-expr_info* create_str_expr(char* value1, char* value2) 
+expr_info* create_str_expr(char* value1) 
 {
    expr_info* expr = (expr_info*)malloc(sizeof(expr_info));
-   int len2 = value2 ? strlen(value2) : 0;
-   expr->strvalue = (char*) malloc(sizeof(char)*(strlen(value1) + len2 +1)); 
-   strcpy(expr->strvalue, value1);
-   if(value2)
-   {
-      strcat(expr->strvalue, value2);
-   }
+   expr->strvalue = (char*)malloc(sizeof(char)); 
+   expr->strvalue = value1;
    expr->type = 2;
-   return expr;
-		
+   return expr;		
 }
 
 void free_expr(expr_info* expr)
@@ -157,7 +150,7 @@ void free_expr(expr_info* expr)
 
 void print_expr(expr_info* expr)
 {
-   printf("Int expr with value:%d\n",expr->intvalue);
+   printf("Var %s with value:%d\n",expr->strvalue, expr->intvalue);
    // if(expr->type == 1) 
    // {
 	// printf("Int expr with value:%d\n",expr->intvalue);

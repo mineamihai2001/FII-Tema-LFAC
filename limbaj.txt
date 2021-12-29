@@ -19,7 +19,6 @@ int f (int x, int y, int z[100])
 }
 main()
 {
-    !!!!x = f(3, y, g(z));
     if(x)
     {
         x=4;
