@@ -818,7 +818,7 @@ YY_RULE_SETUP
 case 12:
 YY_RULE_SETUP
 #line 18 "limbaj.l"
-{return NR;}
+{yylval.intval = atoi(yytext); return NR;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP

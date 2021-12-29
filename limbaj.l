@@ -15,7 +15,7 @@
 "main()" {return MAIN;}
 [_a-zA-Z][_a-zA-Z0-9]* {return ID;}
 "=" {return ASSIGN;}
-[0-9]+ {return NR;}
+[0-9]+ {yylval.intval = atoi(yytext); return NR;}
 [ \t] ;
 \n {yylineno++;}
 . {return yytext[0];}

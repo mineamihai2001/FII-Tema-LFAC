@@ -49,37 +49,50 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    ID = 258,
-    TIP = 259,
-    MAIN = 260,
-    ASSIGN = 261,
-    NR = 262,
-    RETURN = 263,
-    CLASS = 264,
-    PRIVATE = 265,
-    PUBLIC = 266,
-    IF = 267,
-    WHILE = 268,
-    FOR = 269
+    TIP = 258,
+    MAIN = 259,
+    ASSIGN = 260,
+    RETURN = 261,
+    CLASS = 262,
+    PRIVATE = 263,
+    PUBLIC = 264,
+    IF = 265,
+    WHILE = 266,
+    FOR = 267,
+    ID = 268,
+    STRING = 269,
+    NR = 270
   };
 #endif
 /* Tokens.  */
-#define ID 258
-#define TIP 259
-#define MAIN 260
-#define ASSIGN 261
-#define NR 262
-#define RETURN 263
-#define CLASS 264
-#define PRIVATE 265
-#define PUBLIC 266
-#define IF 267
-#define WHILE 268
-#define FOR 269
+#define TIP 258
+#define MAIN 259
+#define ASSIGN 260
+#define RETURN 261
+#define CLASS 262
+#define PRIVATE 263
+#define PUBLIC 264
+#define IF 265
+#define WHILE 266
+#define FOR 267
+#define ID 268
+#define STRING 269
+#define NR 270
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+union YYSTYPE
+{
+#line 16 "limbaj.y"
+
+      int intval;
+      char* strval;
+      struct expr_info* expr_ptr;
+
+#line 93 "y.tab.h"
+
+};
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif

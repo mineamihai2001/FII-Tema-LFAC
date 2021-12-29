@@ -14,24 +14,25 @@ public:
 };
 int f (int x, int y, int z[100])
 {
-    z=43;
+    z=2;
     return z;
 }
 main()
 {
-    x = f(10, y, g(z));
+    !!!!x = f(3, y, g(z));
     if(x)
     {
-        x=1;
+        x=4;
     }
-    x = 1 + 2;
+    x = 5;
     while(x)
     {
-        x=1;
+        x=6;
     }
-    for(i=1;j;k=k+1)
+    for(i=7;j;k=8)
     {
-        i=j+k;
+        i=9;
     }
-    x=1+2;
+    x=10+11;
+    x=12;
 }
