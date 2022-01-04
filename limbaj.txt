@@ -12,6 +12,10 @@ public:
         return x;
     }   
 };
+struct person{
+    int age;
+    char name;
+};
 int f (int x, int y, int z[100])
 {
     z=2;

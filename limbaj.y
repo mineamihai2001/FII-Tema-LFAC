@@ -13,15 +13,17 @@ expr_info* create_str_expr(char* value1);
 void free_expr(expr_info* expr);
 void print_expr(expr_info* expr);
 symtab* assign(int valoare, char* nume);
-int print_var_info(symtab* id);
+
+int i = 0;
+
 %}
 %union {
       int intval;
       char* strval;
       struct expr_info* expr_ptr;
-      struct symtab* symp;
+      struct symtab* (symp[13]);
 }
-%token TIP MAIN ASSIGN RETURN CLASS PRIVATE PUBLIC IF WHILE FOR ID
+%token TIP MAIN ASSIGN RETURN CLASS PRIVATE PUBLIC IF WHILE FOR ID STRUCT
 %token <intval> NR
 %type <symp> ID
 %type <expr_ptr> expr
@@ -32,8 +34,10 @@ int print_var_info(symtab* id);
 
 %start progr
 %%
-progr : declaratii bloc {printf("program corect sintactic\n");}
-      ;
+progr : declaratii bloc {  
+                           printf("program corect sintactic\n");
+                        }
+                        ;
 
 declaratii : declarare_aux
 	   | declaratii declarare_aux
@@ -45,7 +49,8 @@ declaratie : TIP lista_variabile
            | TIP ID '(' lista_param ')'
            | TIP ID '(' ')'
            | TIP ID '[' NR ']'
-           | clasa           
+           | clasa   
+           | structura        
            ;
 declaratie_functie : TIP ID '(' lista_param ')' '{' list return_id '}'
                    | TIP ID '(' ')' '{' list return_id '}'
@@ -67,6 +72,8 @@ param : TIP ID
 
 clasa : CLASS ID '{' corp_clasa '}'
       ;
+structura : STRUCT ID '{' declaratii '}'
+          ;
 corp_clasa : PRIVATE ':' declaratii PUBLIC ':' declaratii
            | declaratii PUBLIC ':' declaratii
            ;
@@ -93,14 +100,17 @@ condition : ID
 /* instructiune */
 statement : ID ASSIGN expr {
                            symtab* id = (symtab*)malloc(sizeof(symtab));
-                           char c = $1->valoare;
+                           $1[i] = (symtab*)malloc(sizeof(symtab));
+
+                           char c = $1[i]->valoare;
                            char var[1];
                            var[0] = c;
-                           $1->nume = var;
+                           $1[i]->nume = var;
                            id = assign($3->intvalue, $3->strvalue);
-                           $1->valoare = id->valoare;
-
-                           printf("ID %s with value:%d\n", $1->nume, $1->valoare);
+                           $1[i]->valoare = id->valoare;
+                           
+                           printf("ID %s with value:%d\n", $1[i]->nume, $1[i]->valoare);                          
+                           ++i;
                            }
           | ID '(' lista_apel ')'
           ;
@@ -139,12 +149,6 @@ symtab* assign(int value, char* nume)
    symtab* id = (symtab*)malloc(sizeof(symtab));
    id->valoare = value;
    return id;
-}
-
-int print_var_info(symtab* id)
-{
-   printf("ID %s with value:%d\n",id->nume, id->valoare);
-   return id->valoare;
 }
 
 expr_info* create_int_expr(int value)

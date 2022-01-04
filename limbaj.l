@@ -7,6 +7,7 @@
 "int"|"float"|"char"|"string" {return TIP;}
 "return" {return RETURN;}
 "class" {return CLASS;}
+"struct" {return STRUCT;}
 "private" {return PRIVATE;}
 "public" {return PUBLIC;}
 "if" {return IF;}
