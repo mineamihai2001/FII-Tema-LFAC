@@ -81,13 +81,14 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 16 "limbaj.y"
+#line 18 "limbaj.y"
 
       int intval;
       char* strval;
       struct expr_info* expr_ptr;
+      struct symtab* symp;
 
-#line 91 "y.tab.h"
+#line 92 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -12,15 +12,18 @@ expr_info* create_int_expr(int value);
 expr_info* create_str_expr(char* value1);
 void free_expr(expr_info* expr);
 void print_expr(expr_info* expr);
+symtab* assign(int valoare, char* nume);
+int print_var_info(symtab* id);
 %}
 %union {
       int intval;
       char* strval;
       struct expr_info* expr_ptr;
+      struct symtab* symp;
 }
 %token TIP MAIN ASSIGN RETURN CLASS PRIVATE PUBLIC IF WHILE FOR ID
 %token <intval> NR
-%token <strval> ID
+%type <symp> ID
 %type <expr_ptr> expr
 %type <expr_ptr> statement
 
@@ -88,7 +91,17 @@ condition : ID
           ;
 
 /* instructiune */
-statement : ID ASSIGN expr {$$ = create_str_expr($1); print_expr($3);}
+statement : ID ASSIGN expr {
+                           symtab* id = (symtab*)malloc(sizeof(symtab));
+                           char c = $1->valoare;
+                           char var[1];
+                           var[0] = c;
+                           $1->nume = var;
+                           id = assign($3->intvalue, $3->strvalue);
+                           $1->valoare = id->valoare;
+
+                           printf("ID %s with value:%d\n", $1->nume, $1->valoare);
+                           }
           | ID '(' lista_apel ')'
           ;
 expr : NR {$$ = create_int_expr($1);}
@@ -121,6 +134,19 @@ lista_apel : expr
            ;
 %%
 
+symtab* assign(int value, char* nume)
+{
+   symtab* id = (symtab*)malloc(sizeof(symtab));
+   id->valoare = value;
+   return id;
+}
+
+int print_var_info(symtab* id)
+{
+   printf("ID %s with value:%d\n",id->nume, id->valoare);
+   return id->valoare;
+}
+
 expr_info* create_int_expr(int value)
 {
    expr_info* expr = (expr_info*)malloc(sizeof(expr_info));
@@ -150,7 +176,7 @@ void free_expr(expr_info* expr)
 
 void print_expr(expr_info* expr)
 {
-   printf("Var %s with value:%d\n",expr->strvalue, expr->intvalue);
+   printf("Exor %s with value:%d\n",expr->strvalue, expr->intvalue);
    // if(expr->type == 1) 
    // {
 	// printf("Int expr with value:%d\n",expr->intvalue);

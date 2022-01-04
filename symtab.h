@@ -4,3 +4,9 @@ typedef struct expr_info
     char* strvalue;
     int type;
 } expr_info;
+
+typedef struct symtab
+{
+    int valoare;
+    char* nume;
+}symtab;

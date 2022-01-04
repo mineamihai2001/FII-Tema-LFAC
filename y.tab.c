@@ -81,8 +81,10 @@ expr_info* create_int_expr(int value);
 expr_info* create_str_expr(char* value1);
 void free_expr(expr_info* expr);
 void print_expr(expr_info* expr);
+symtab* assign(int valoare, char* nume);
+int print_var_info(symtab* id);
 
-#line 86 "y.tab.c"
+#line 88 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -162,13 +164,14 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 16 "limbaj.y"
+#line 18 "limbaj.y"
 
       int intval;
       char* strval;
       struct expr_info* expr_ptr;
+      struct symtab* symp;
 
-#line 172 "y.tab.c"
+#line 175 "y.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -542,13 +545,13 @@ static const yytype_int8 yytranslate[] =
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_int8 yyrline[] =
+static const yytype_uint8 yyrline[] =
 {
-       0,    32,    32,    35,    36,    38,    39,    41,    42,    43,
-      44,    45,    47,    48,    50,    52,    53,    55,    57,    58,
-      61,    62,    65,    67,    68,    71,    75,    76,    77,    78,
-      79,    80,    81,    82,    85,    87,    91,    92,    94,    95,
-      96,    97,   102,   107,   112,   117,   119,   120
+       0,    35,    35,    38,    39,    41,    42,    44,    45,    46,
+      47,    48,    50,    51,    53,    55,    56,    58,    60,    61,
+      64,    65,    68,    70,    71,    74,    78,    79,    80,    81,
+      82,    83,    84,    85,    88,    90,    94,   105,   107,   108,
+     109,   110,   115,   120,   125,   130,   132,   133
 };
 #endif
 
@@ -1425,65 +1428,75 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 32 "limbaj.y"
+#line 35 "limbaj.y"
                         {printf("program corect sintactic\n");}
-#line 1431 "y.tab.c"
+#line 1434 "y.tab.c"
     break;
 
   case 36:
-#line 91 "limbaj.y"
-                           {(yyval.expr_ptr) = create_str_expr((yyvsp[-2].strval)); print_expr((yyvsp[0].expr_ptr));}
-#line 1437 "y.tab.c"
+#line 94 "limbaj.y"
+                           {
+                           symtab* id = (symtab*)malloc(sizeof(symtab));
+                           char c = (yyvsp[-2].symp)->valoare;
+                           char var[1];
+                           var[0] = c;
+                           (yyvsp[-2].symp)->nume = var;
+                           id = assign((yyvsp[0].expr_ptr)->intvalue, (yyvsp[0].expr_ptr)->strvalue);
+                           (yyvsp[-2].symp)->valoare = id->valoare;
+
+                           printf("ID %s with value:%d\n", (yyvsp[-2].symp)->nume, (yyvsp[-2].symp)->valoare);
+                           }
+#line 1450 "y.tab.c"
     break;
 
   case 38:
-#line 94 "limbaj.y"
+#line 107 "limbaj.y"
           {(yyval.expr_ptr) = create_int_expr((yyvsp[0].intval));}
-#line 1443 "y.tab.c"
+#line 1456 "y.tab.c"
     break;
 
   case 41:
-#line 97 "limbaj.y"
+#line 110 "limbaj.y"
                      {
                       (yyval.expr_ptr) = create_int_expr((yyvsp[-2].expr_ptr)->intvalue + (yyvsp[0].expr_ptr)->intvalue);
                       free_expr((yyvsp[-2].expr_ptr));
                       free_expr((yyvsp[0].expr_ptr));     
                       }
-#line 1453 "y.tab.c"
+#line 1466 "y.tab.c"
     break;
 
   case 42:
-#line 102 "limbaj.y"
+#line 115 "limbaj.y"
                      {
                       (yyval.expr_ptr) = create_int_expr((yyvsp[-2].expr_ptr)->intvalue - (yyvsp[0].expr_ptr)->intvalue);
                       free_expr((yyvsp[-2].expr_ptr));
                       free_expr((yyvsp[0].expr_ptr));     
                       }
-#line 1463 "y.tab.c"
+#line 1476 "y.tab.c"
     break;
 
   case 43:
-#line 107 "limbaj.y"
+#line 120 "limbaj.y"
                      {
                       (yyval.expr_ptr) = create_int_expr((yyvsp[-2].expr_ptr)->intvalue * (yyvsp[0].expr_ptr)->intvalue);
                       free_expr((yyvsp[-2].expr_ptr));
                       free_expr((yyvsp[0].expr_ptr));     
                       }
-#line 1473 "y.tab.c"
+#line 1486 "y.tab.c"
     break;
 
   case 44:
-#line 112 "limbaj.y"
+#line 125 "limbaj.y"
                      {
                       (yyval.expr_ptr) = create_int_expr((yyvsp[-2].expr_ptr)->intvalue / (yyvsp[0].expr_ptr)->intvalue);
                       free_expr((yyvsp[-2].expr_ptr));
                       free_expr((yyvsp[0].expr_ptr));     
                       }
-#line 1483 "y.tab.c"
+#line 1496 "y.tab.c"
     break;
 
 
-#line 1487 "y.tab.c"
+#line 1500 "y.tab.c"
 
       default: break;
     }
@@ -1715,8 +1728,21 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 122 "limbaj.y"
+#line 135 "limbaj.y"
 
+
+symtab* assign(int value, char* nume)
+{
+   symtab* id = (symtab*)malloc(sizeof(symtab));
+   id->valoare = value;
+   return id;
+}
+
+int print_var_info(symtab* id)
+{
+   printf("ID %s with value:%d\n",id->nume, id->valoare);
+   return id->valoare;
+}
 
 expr_info* create_int_expr(int value)
 {
@@ -1747,7 +1773,7 @@ void free_expr(expr_info* expr)
 
 void print_expr(expr_info* expr)
 {
-   printf("Var %s with value:%d\n",expr->strvalue, expr->intvalue);
+   printf("Exor %s with value:%d\n",expr->strvalue, expr->intvalue);
    // if(expr->type == 1) 
    // {
 	// printf("Int expr with value:%d\n",expr->intvalue);
