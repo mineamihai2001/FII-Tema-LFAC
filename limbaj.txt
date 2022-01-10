@@ -1,7 +1,10 @@
-int x;
-int y;
+int i;
+int j;
+int k;
+int p;
+int ceva;
 int a[100];
-class object{
+class Object{
 private:
     int x;
     int z;
@@ -14,12 +17,13 @@ public:
 };
 int f (int x, int y, int z[100])
 {
-    z=2;
+    z=2+2;
+    print(#z este egal cu# , z);
     return z;
 }
 main()
 {
-    test=!(12|0&(2&3));
+    p=!(12|0&(2&3));
     if(x)
     {
         x=4;

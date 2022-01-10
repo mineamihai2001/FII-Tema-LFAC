@@ -4,6 +4,7 @@
 %}
 %option noyywrap
 %%
+"print" {return PRINT;}
 "int"|"float"|"char"|"string" {return TIP;}
 "return" {return RETURN;}
 "class" {return CLASS;}
@@ -13,6 +14,7 @@
 "while" {return WHILE;}
 "for" {return FOR;}
 "main()" {return MAIN;}
+#[_a-zA-Z ][_a-zA-Z0-9 ]*# {yylval.nume = strdup(yytext); return STRING;}
 [_a-zA-Z][_a-zA-Z0-9]* {yylval.nume=strdup(yytext); return ID;}
 "=" {return ASSIGN;}
 [0-9]+ {yylval.valoare = atoi(yytext); return NR;}

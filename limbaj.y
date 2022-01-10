@@ -18,10 +18,12 @@ int print_var_info(symtab* id);
 %}
 %union {
       int valoare;
+      char* string;
       char* nume;
 }
-%token TIP MAIN ASSIGN RETURN CLASS PRIVATE PUBLIC IF WHILE FOR ID
+%token TIP MAIN ASSIGN RETURN CLASS PRIVATE PUBLIC IF WHILE FOR PRINT
 %token <valoare> NR
+%token <nume> STRING
 %token <nume> ID
 %type <valoare> expr
 
@@ -60,8 +62,8 @@ return_id : RETURN ID ';'
 // lista_variabile : variabila
 //                 | lista_variabile ',' variabila
 //                 ;
-variabila : ID
-          ;
+// variabila : ID
+//           ;
 lista_param : param
             | lista_param ','  param 
             ;
@@ -107,7 +109,10 @@ statement : ID ASSIGN expr {
                               }
                               else createInt($1, $3);
                            }
+          | ID ASSIGN 'new' ID '(' ')'
           | ID '(' lista_apel ')'
+          | PRINT '(' ID ')' { Print("", $3); }
+          | PRINT '(' STRING ',' ID ')' { Print($3, $5); }
           ;
 expr : NR {$$ = $1;}
      | ID {$$ = $1;}

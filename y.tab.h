@@ -59,8 +59,10 @@ extern int yydebug;
     IF = 265,
     WHILE = 266,
     FOR = 267,
-    ID = 268,
-    NR = 269
+    PRINT = 268,
+    NR = 269,
+    STRING = 270,
+    ID = 271
   };
 #endif
 /* Tokens.  */
@@ -74,8 +76,10 @@ extern int yydebug;
 #define IF 265
 #define WHILE 266
 #define FOR 267
-#define ID 268
+#define PRINT 268
 #define NR 269
+#define STRING 270
+#define ID 271
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -84,9 +88,10 @@ union YYSTYPE
 #line 19 "limbaj.y"
 
       int valoare;
+      char* string;
       char* nume;
 
-#line 90 "y.tab.h"
+#line 95 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
