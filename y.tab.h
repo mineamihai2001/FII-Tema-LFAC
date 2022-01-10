@@ -83,12 +83,10 @@ union YYSTYPE
 {
 #line 19 "limbaj.y"
 
-      int intval;
-      char* strval;
-      struct expr_info* expr_ptr;
-      struct symtab* symp;
+      int valoare;
+      char* nume;
 
-#line 92 "y.tab.h"
+#line 90 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

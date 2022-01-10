@@ -7,16 +7,15 @@
 "int"|"float"|"char"|"string" {return TIP;}
 "return" {return RETURN;}
 "class" {return CLASS;}
-"struct" {return STRUCT;}
 "private" {return PRIVATE;}
 "public" {return PUBLIC;}
 "if" {return IF;}
 "while" {return WHILE;}
 "for" {return FOR;}
 "main()" {return MAIN;}
-[_a-zA-Z][_a-zA-Z0-9]* {yylval.strval=strdup(yytext); return ID;}
+[_a-zA-Z][_a-zA-Z0-9]* {yylval.nume=strdup(yytext); return ID;}
 "=" {return ASSIGN;}
-[0-9]+ {yylval.intval = atoi(yytext); return NR;}
+[0-9]+ {yylval.valoare = atoi(yytext); return NR;}
 [ \t] ;
 \n {yylineno++;}
 . {return yytext[0];}

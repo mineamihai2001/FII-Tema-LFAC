@@ -17,13 +17,13 @@ symtab* assign(int valoare, char* nume);
 int print_var_info(symtab* id);
 %}
 %union {
-      int value;
-      char* name;
+      int valoare;
+      char* nume;
 }
 %token TIP MAIN ASSIGN RETURN CLASS PRIVATE PUBLIC IF WHILE FOR ID
-%type <value> expr
-%type <value> NR
-%type <name> ID
+%token <valoare> NR
+%token <nume> ID
+%type <valoare> expr
 
 %left '!'
 %left '&' '|'
@@ -100,12 +100,12 @@ condition : expr {
 
 /* instructiune */
 statement : ID ASSIGN expr { 
-                              if(checkDeclared($1) == -1;
+                              if(checkDeclared($1) == -1)
                               {
                                  yyerror();
                                  printf("Variabila nedeclarata\n");
                               }
-                              else atribuireINT($1, $3);
+                              else createInt($1, $3);
                            }
           | ID '(' lista_apel ')'
           ;

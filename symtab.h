@@ -12,15 +12,15 @@ typedef struct symtab
     int tip;
 } symtab;
 
-typedef struct var
+struct var
 {
     int intvalue;
     char *charvalue;
     char name[1024];
     int init;
-};
+}varTab[1024];
 
-struct var varTab[1024];
+// struct var varTab[1024];
 int varCounter = 0;
 
 void createInt(char x[], int v)
