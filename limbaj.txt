@@ -12,10 +12,6 @@ public:
         return x;
     }   
 };
-struct person{
-    int age;
-    char name;
-};
 int f (int x, int y, int z[100])
 {
     z=2;
@@ -23,12 +19,12 @@ int f (int x, int y, int z[100])
 }
 main()
 {
+    test=!(12|0&(2&3));
     if(x)
     {
         x=4;
     }
-    x = 5;
-    while(x)
+    while(1|(2&3))
     {
         x=6;
     }
@@ -36,6 +32,4 @@ main()
     {
         i=9;
     }
-    x=10+11;
-    x=12;
 }

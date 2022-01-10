@@ -10,56 +10,56 @@ extern int yylineno;
 
 expr_info* create_int_expr(int value);
 expr_info* create_str_expr(char* value1);
+expr_info* create_bool_expr(int value);
 void free_expr(expr_info* expr);
 void print_expr(expr_info* expr);
 symtab* assign(int valoare, char* nume);
-
-int i = 0;
-
+int print_var_info(symtab* id);
 %}
 %union {
-      int intval;
-      char* strval;
-      struct expr_info* expr_ptr;
-      struct symtab* (symp[13]);
+      int value;
+      char* name;
 }
-%token TIP MAIN ASSIGN RETURN CLASS PRIVATE PUBLIC IF WHILE FOR ID STRUCT
-%token <intval> NR
-%type <symp> ID
-%type <expr_ptr> expr
-%type <expr_ptr> statement
+%token TIP MAIN ASSIGN RETURN CLASS PRIVATE PUBLIC IF WHILE FOR ID
+%type <value> expr
+%type <value> NR
+%type <name> ID
 
+%left '!'
+%left '&' '|'
 %left '-' '+'
 %left '/' '*'
 
 %start progr
 %%
-progr : declaratii bloc {  
-                           printf("program corect sintactic\n");
-                        }
-                        ;
+progr : declaratii bloc {printf("program corect sintactic\n");}
+      ;
 
-declaratii : declarare_aux
-	   | declaratii declarare_aux
+declaratii : declare_aux
+	   | declaratii declare_aux
 	   ;
-declarare_aux : declaratie ';'
+declare_aux : declaratie ';'
               | declaratie_functie
               ;
-declaratie : TIP lista_variabile
+declaratie : TIP ID { if (checkDeclared ($2) == -1)
+                         declare ($2); 
+                      else { yyerror();
+                         printf ("Variabila deja declarata\n");
+                           }
+                    }
            | TIP ID '(' lista_param ')'
            | TIP ID '(' ')'
            | TIP ID '[' NR ']'
-           | clasa   
-           | structura        
+           | clasa           
            ;
 declaratie_functie : TIP ID '(' lista_param ')' '{' list return_id '}'
                    | TIP ID '(' ')' '{' list return_id '}'
                    ;
 return_id : RETURN ID ';'
           ;
-lista_variabile : variabila
-                | lista_variabile ',' variabila
-                ;
+// lista_variabile : variabila
+//                 | lista_variabile ',' variabila
+//                 ;
 variabila : ID
           ;
 lista_param : param
@@ -72,8 +72,6 @@ param : TIP ID
 
 clasa : CLASS ID '{' corp_clasa '}'
       ;
-structura : STRUCT ID '{' declaratii '}'
-          ;
 corp_clasa : PRIVATE ':' declaratii PUBLIC ':' declaratii
            | declaratii PUBLIC ':' declaratii
            ;
@@ -94,50 +92,50 @@ list :  statement ';'
 /* [[[[[de rezolvat conditiile]]]]] */
 loop : statement ';' condition ';' statement
      ;
-condition : ID
+condition : expr {
+                  // $$=create_bool_expr($1->intvalue);
+                  // free_expr($1);
+                  }
           ;
 
 /* instructiune */
-statement : ID ASSIGN expr {
-                           symtab* id = (symtab*)malloc(sizeof(symtab));
-                           $1[i] = (symtab*)malloc(sizeof(symtab));
-
-                           char c = $1[i]->valoare;
-                           char var[1];
-                           var[0] = c;
-                           $1[i]->nume = var;
-                           id = assign($3->intvalue, $3->strvalue);
-                           $1[i]->valoare = id->valoare;
-                           
-                           printf("ID %s with value:%d\n", $1[i]->nume, $1[i]->valoare);                          
-                           ++i;
+statement : ID ASSIGN expr { 
+                              if(checkDeclared($1) == -1;
+                              {
+                                 yyerror();
+                                 printf("Variabila nedeclarata\n");
+                              }
+                              else atribuireINT($1, $3);
                            }
           | ID '(' lista_apel ')'
           ;
-expr : NR {$$ = create_int_expr($1);}
-     | ID
+expr : NR {$$ = $1;}
+     | ID {$$ = $1;}
      | ID '(' lista_apel ')'
      | expr '+' expr {
-                      $$ = create_int_expr($1->intvalue + $3->intvalue);
-                      free_expr($1);
-                      free_expr($3);     
+                      $$ = $1 + $3;     
                       }
      | expr '-' expr {
-                      $$ = create_int_expr($1->intvalue - $3->intvalue);
-                      free_expr($1);
-                      free_expr($3);     
+                      $$ = $1 - $3;     
                       }
      | expr '*' expr {
-                      $$ = create_int_expr($1->intvalue * $3->intvalue);
-                      free_expr($1);
-                      free_expr($3);     
+                      $$ = $1 * $3;     
                       }
      | expr '/' expr {
-                      $$ = create_int_expr($1->intvalue / $3->intvalue);
-                      free_expr($1);
-                      free_expr($3);     
+                      $$ = $1 / $3;     
                       }
-     |'(' expr ')' 
+     | expr '&' expr {
+     				       $$ = $1 && $3;
+     				       }
+     | expr '|' expr {
+     				       $$ = $1 || $3;
+     				       }
+     | '!' expr      {
+                      $$ = !$$;  
+                      }
+     |'(' expr ')'   {
+                      $$ = $2;  
+                      }
      ;
 lista_apel : expr
            | lista_apel ',' expr
@@ -149,6 +147,22 @@ symtab* assign(int value, char* nume)
    symtab* id = (symtab*)malloc(sizeof(symtab));
    id->valoare = value;
    return id;
+}
+
+int print_var_info(symtab* id)
+{
+   printf("ID %s with value:%d\n",id->nume, id->valoare);
+   return id->valoare;
+}
+
+expr_info* create_bool_expr(int value)
+{
+   expr_info* expr = (expr_info*)malloc(sizeof(expr_info));
+   expr->intvalue = 0;
+   if(value)
+      expr->intvalue = 1;
+   expr->type = 1;
+   return expr;   
 }
 
 expr_info* create_int_expr(int value)

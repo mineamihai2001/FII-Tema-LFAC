@@ -60,8 +60,7 @@ extern int yydebug;
     WHILE = 266,
     FOR = 267,
     ID = 268,
-    STRUCT = 269,
-    NR = 270
+    NR = 269
   };
 #endif
 /* Tokens.  */
@@ -76,21 +75,20 @@ extern int yydebug;
 #define WHILE 266
 #define FOR 267
 #define ID 268
-#define STRUCT 269
-#define NR 270
+#define NR 269
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 20 "limbaj.y"
+#line 19 "limbaj.y"
 
       int intval;
       char* strval;
       struct expr_info* expr_ptr;
-      struct symtab* (symp[13]);
+      struct symtab* symp;
 
-#line 94 "y.tab.h"
+#line 92 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
