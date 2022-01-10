@@ -4,7 +4,14 @@
 %}
 %option noyywrap
 %%
+"@eq" {return EQ;}
+"@neq" {return NEQ;}
+"@g" {return GR;}
+"@ge" {return GE;}
+"@l" {return LS;}
+"@le" {return LE;}
 "print" {return PRINT;}
+"print_tab()" {return PRINTTAB;}
 "int"|"float"|"char"|"string" {return TIP;}
 "return" {return RETURN;}
 "class" {return CLASS;}

@@ -21,7 +21,7 @@ int print_var_info(symtab* id);
       char* string;
       char* nume;
 }
-%token TIP MAIN ASSIGN RETURN CLASS PRIVATE PUBLIC IF WHILE FOR PRINT
+%token TIP MAIN ASSIGN RETURN CLASS PRIVATE PUBLIC IF WHILE FOR PRINT PRINTTAB EQ NEQ GR GE LS LE
 %token <valoare> NR
 %token <nume> STRING
 %token <nume> ID
@@ -94,10 +94,7 @@ list :  statement ';'
 /* [[[[[de rezolvat conditiile]]]]] */
 loop : statement ';' condition ';' statement
      ;
-condition : expr {
-                  // $$=create_bool_expr($1->intvalue);
-                  // free_expr($1);
-                  }
+condition : expr 
           ;
 
 /* instructiune */
@@ -109,10 +106,36 @@ statement : ID ASSIGN expr {
                               }
                               else createInt($1, $3);
                            }
+          | ID ASSIGN ID {
+                           if(checkDeclared($1) == -1)
+                           {
+                              yyerror();
+                              printf("Variabila nedeclarata\n");
+                           }
+                           if(checkDeclared($3) == -1)
+                           {
+                              yyerror();
+                              printf("Variabila nedeclarata\n");
+                           }
+                           if(assignID($1, $3) == -1)
+                           {
+                              yyerror();
+                              printf("Variabilele nu sunt de acelasi tip\n");
+                           }
+                         }
+         //  | ID ASSIGN STRING { ... }
           | ID ASSIGN 'new' ID '(' ')'
           | ID '(' lista_apel ')'
+          | TIP ID { 
+               if (checkDeclared ($2) == -1)
+                         declare ($2); 
+               else { yyerror();
+                         printf ("Variabila deja declarata\n");
+                    }
+             }
           | PRINT '(' ID ')' { Print("", $3); }
           | PRINT '(' STRING ',' ID ')' { Print($3, $5); }
+          | PRINTTAB {printTab();}
           ;
 expr : NR {$$ = $1;}
      | ID {$$ = $1;}
@@ -138,6 +161,36 @@ expr : NR {$$ = $1;}
      | '!' expr      {
                       $$ = !$$;  
                       }
+     | expr EQ expr {
+                        if($1 == $3)
+                           $$ = 1;
+                        else $$ = 0;
+                      }
+     | expr NEQ expr {
+                        if($1 != $3)
+                           $$ = 1;
+                        else $$ = 0;
+                      }
+     | expr LE expr {
+                        if($1 <= $3)
+                           $$ = 1;
+                        else $$ = 0;
+                       }
+     | expr LS expr {
+                        if($1 < $3)
+                           $$ = 1;
+                        else $$ = 0;
+                       }
+      | expr GE expr {
+                        if($1 >= $3)
+                           $$ = 1;
+                        else $$ = 0;
+                       }
+      | expr GR expr {
+                        if($1 > $3)
+                           $$ = 1;
+                        else $$ = 0;
+                       }
      |'(' expr ')'   {
                       $$ = $2;  
                       }

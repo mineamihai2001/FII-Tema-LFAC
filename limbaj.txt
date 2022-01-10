@@ -1,7 +1,6 @@
 int i;
 int j;
 int k;
-int p;
 int ceva;
 int a[100];
 class Object{
@@ -17,16 +16,20 @@ public:
 };
 int f (int x, int y, int z[100])
 {
-    z=2+2;
-    print(#z este egal cu# , z);
-    return z;
+    int r;
+    return r;
 }
 main()
 {
+    int p;
     p=!(12|0&(2&3));
-    if(x)
+    if(x @neq 0)
     {
-        x=4;
+        int q;
+        z=(2+2)*10/2;
+        q=z;
+        print(#q este egal cu# , q);
+        print(z);
     }
     while(1|(2&3))
     {
@@ -36,4 +39,5 @@ main()
     {
         i=9;
     }
+    print_tab();
 }

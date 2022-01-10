@@ -60,9 +60,16 @@ extern int yydebug;
     WHILE = 266,
     FOR = 267,
     PRINT = 268,
-    NR = 269,
-    STRING = 270,
-    ID = 271
+    PRINTTAB = 269,
+    EQ = 270,
+    NEQ = 271,
+    GR = 272,
+    GE = 273,
+    LS = 274,
+    LE = 275,
+    NR = 276,
+    STRING = 277,
+    ID = 278
   };
 #endif
 /* Tokens.  */
@@ -77,9 +84,16 @@ extern int yydebug;
 #define WHILE 266
 #define FOR 267
 #define PRINT 268
-#define NR 269
-#define STRING 270
-#define ID 271
+#define PRINTTAB 269
+#define EQ 270
+#define NEQ 271
+#define GR 272
+#define GE 273
+#define LS 274
+#define LE 275
+#define NR 276
+#define STRING 277
+#define ID 278
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -91,7 +105,7 @@ union YYSTYPE
       char* string;
       char* nume;
 
-#line 95 "y.tab.h"
+#line 109 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

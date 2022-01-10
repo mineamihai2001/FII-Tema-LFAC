@@ -1,3 +1,8 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <errno.h>
+
 typedef struct expr_info
 {
     int intvalue;
@@ -19,6 +24,7 @@ struct var
     char name[1024];
     int type; // 1-int, 2-char, 3-class
     int init; // is initialized
+    int global;
 } varTab[1024];
 
 // struct var varTab[1024];
@@ -83,7 +89,21 @@ void assignString(char x[], char *val)
     varTab[p].init = 1;
 }
 
+int assignID(char x[], char y[])
+{
+    int i = checkDeclared(x);
+    int j = checkDeclared(y);
 
+    if (varTab[i].type == varTab[j].type)
+    {
+        if (varTab[i].type == 1) // int
+            varTab[i].intvalue = varTab[j].intvalue;
+        else if (varTab[i].type == 2) // char
+            strcpy(varTab[i].charvalue, varTab[j].charvalue);
+    }
+    else return -1;
+    return 0;
+}
 void Print(char *string, char *variable)
 {
     for (int i = 0; i <= varCounter; ++i)
@@ -107,4 +127,35 @@ void Print(char *string, char *variable)
             }
         }
     }
+}
+
+int printTab()
+{
+    FILE *symTab;
+    FILE *functTab;
+    symTab = fopen("symbol_table.txt", "w+");             // for variables
+    functTab = fopen("symbol_table_functions.txt", "w+"); // for functions
+
+    if (symTab == NULL)
+    {
+        perror("Eroare la creare fisier pt simboluri\n");
+        return errno;
+    }
+    if (functTab == NULL)
+    {
+        perror("Eroare la creare fisier pt functii\n");
+        return errno;
+    }
+
+    for (int i = 0; i < varCounter; ++i)
+    {
+        if (varTab[i].type == 1)
+            fprintf(symTab, "int %s = %d\n", varTab[i].name, varTab[i].intvalue);
+        if (varTab[i].type == 2)
+            fprintf(symTab, "int %s = %s\n", varTab[i].name, varTab[i].charvalue);
+    }
+
+    fclose(symTab);
+    fclose(functTab);
+    return 1;
 }
