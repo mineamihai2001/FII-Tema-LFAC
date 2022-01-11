@@ -21,7 +21,8 @@ int print_var_info(symtab* id);
       char* string;
       char* nume;
 }
-%token TIP MAIN ASSIGN RETURN CLASS PRIVATE PUBLIC IF WHILE FOR PRINT PRINTTAB EQ NEQ GR GE LS LE
+%token MAIN ASSIGN RETURN CLASS PRIVATE PUBLIC IF WHILE FOR PRINT PRINTTAB EQ NEQ GR GE LS LE
+%token <string> TIP
 %token <valoare> NR
 %token <nume> STRING
 %token <nume> ID
@@ -44,7 +45,7 @@ declare_aux : declaratie ';'
               | declaratie_functie
               ;
 declaratie : TIP ID { if (checkDeclared ($2) == -1)
-                         declare ($2); 
+                         declareGlobal ($2, $1); 
                       else { yyerror();
                          printf ("Variabila deja declarata\n");
                            }
@@ -54,7 +55,9 @@ declaratie : TIP ID { if (checkDeclared ($2) == -1)
            | TIP ID '[' NR ']'
            | clasa           
            ;
-declaratie_functie : TIP ID '(' lista_param ')' '{' list return_id '}'
+declaratie_functie : TIP ID '(' lista_param ')' '{' list return_id '}' {
+                                                                          createFunction($2, $1);
+                                                                       }
                    | TIP ID '(' ')' '{' list return_id '}'
                    ;
 return_id : RETURN ID ';'
@@ -64,11 +67,17 @@ return_id : RETURN ID ';'
 //                 ;
 // variabila : ID
 //           ;
-lista_param : param
+lista_param : param 
             | lista_param ','  param 
             ;
             
-param : TIP ID
+param : TIP ID {
+               if (checkDeclared ($2) == -1)
+                   {addParam($2, $1);}
+               else { yyerror();
+                   printf ("Variabila deja declarata\n");
+                     }
+               }
       | TIP ID '[' NR ']'
       ; 
 
@@ -104,7 +113,7 @@ statement : ID ASSIGN expr {
                                  yyerror();
                                  printf("Variabila nedeclarata\n");
                               }
-                              else createInt($1, $3);
+                              else assignInt($1, $3);
                            }
           | ID ASSIGN ID {
                            if(checkDeclared($1) == -1)
@@ -123,12 +132,19 @@ statement : ID ASSIGN expr {
                               printf("Variabilele nu sunt de acelasi tip\n");
                            }
                          }
-         //  | ID ASSIGN STRING { ... }
+          | ID ASSIGN STRING { 
+                              if(checkDeclared($1) == -1)
+                              {
+                                 yyerror();
+                                 printf("Variabila nedeclarata\n");
+                              }
+                              else { assignString($1, $3);}
+                              }
           | ID ASSIGN 'new' ID '(' ')'
           | ID '(' lista_apel ')'
           | TIP ID { 
                if (checkDeclared ($2) == -1)
-                         declare ($2); 
+                         declare ($2, $1); 
                else { yyerror();
                          printf ("Variabila deja declarata\n");
                     }
@@ -159,7 +175,9 @@ expr : NR {$$ = $1;}
      				       $$ = $1 || $3;
      				       }
      | '!' expr      {
-                      $$ = !$$;  
+                      if($$ == 1)
+                        $$ = 0;
+                      else $$ = 1;  
                       }
      | expr EQ expr {
                         if($1 == $3)

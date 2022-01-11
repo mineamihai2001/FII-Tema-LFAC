@@ -6,7 +6,6 @@ int a[100];
 class Object{
 private:
     int x;
-    int z;
 public:
     int y;
     int afiseaza(){
@@ -14,22 +13,33 @@ public:
         return x;
     }   
 };
-int f (int x, int y, int z[100])
+int f (int a, char b, float c)
 {
+    x=5;
+    y=x;
+    print("y egal cu", y);
     int r;
     return r;
+}
+int h(int list)
+{
+    int counter;
+    return counter;
 }
 main()
 {
     int p;
+    int q;
+    int z;
+    char w;
+    w = "ceva";
+    print(w);
     p=!(12|0&(2&3));
     if(x @neq 0)
     {
-        int q;
         z=(2+2)*10/2;
         q=z;
-        print(#q este egal cu# , q);
-        print(z);
+        print("z este egal cu", z);
     }
     while(1|(2&3))
     {

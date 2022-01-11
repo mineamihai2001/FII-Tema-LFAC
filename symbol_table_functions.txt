@@ -1,0 +1,2 @@
+int f (int a, char b, float c)
+int h (int list)
