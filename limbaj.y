@@ -20,12 +20,14 @@ int print_var_info(symtab* id);
       int valoare;
       char* string;
       char* nume;
+      struct expr_info *expr_info;
 }
 %token MAIN ASSIGN RETURN CLASS PRIVATE PUBLIC IF WHILE FOR PRINT PRINTTAB EQ NEQ GR GE LS LE
 %token <string> TIP
 %token <valoare> NR
 %token <nume> STRING
 %token <nume> ID
+%token <nume> OBJECT
 %type <valoare> expr
 
 %left '!'
@@ -35,7 +37,7 @@ int print_var_info(symtab* id);
 
 %start progr
 %%
-progr : declaratii bloc {printf("program corect sintactic\n");}
+progr : declaratii bloc {printf("\n\n\n\t\t\tprogram corect sintactic\n\n\n");}
       ;
 
 declaratii : declare_aux
@@ -50,13 +52,37 @@ declaratie : TIP ID { if (checkDeclared ($2) == -1)
                          printf ("Variabila deja declarata\n");
                            }
                     }
-           | TIP ID '(' lista_param ')'
+           | TIP ID '(' lista_param ')' { if (checkFunctDeclared ($2) != -1)
+                                          { yyerror();
+                                             printf ("Functie deja declarata\n");
+                                          }
+                                       }
            | TIP ID '(' ')'
-           | TIP ID '[' NR ']'
+           | TIP ID '[' NR ']' {
+                                 if (checkDeclared ($2) == -1)
+                                    declareGlobal ($2, $1); 
+                                 else { yyerror();
+                                 printf ("Variabila deja declarata\n");
+                                      }
+                               }
+           | TIP ID ASSIGN expr { 
+                              if (checkDeclared ($2) == -1)
+                                 {
+                                    declareGlobal ($2, $1);
+                                    assignInt($2, $4);
+                                 } else { yyerror();
+                                 printf ("Variabila deja declarata\n");
+                                }
+                                }
            | clasa           
            ;
-declaratie_functie : TIP ID '(' lista_param ')' '{' list return_id '}' {
-                                                                          createFunction($2, $1);
+
+declaratie_functie : TIP ID '(' lista_param ')' '{' list RETURN ID ';' '}' {
+                                                                           if (checkFunctDeclared ($2) == -1)
+                                                                                 createFunction($2, $1, $9);
+                                                                           else { yyerror();
+                                                                              printf ("Functie deja declarata\n");
+                                                                                 }
                                                                        }
                    | TIP ID '(' ')' '{' list return_id '}'
                    ;
@@ -73,15 +99,16 @@ lista_param : param
             
 param : TIP ID {
                if (checkDeclared ($2) == -1)
-                   {addParam($2, $1);}
-               else { yyerror();
-                   printf ("Variabila deja declarata\n");
-                     }
+               {
+                  addParam($2, $1);
+               } else { yyerror();
+                        printf ("Variabila deja declarata\n");
+                      }
                }
       | TIP ID '[' NR ']'
       ; 
 
-clasa : CLASS ID '{' corp_clasa '}'
+clasa : CLASS OBJECT '{' corp_clasa '}' {createClass($2);}
       ;
 corp_clasa : PRIVATE ':' declaratii PUBLIC ':' declaratii
            | declaratii PUBLIC ':' declaratii
@@ -100,7 +127,6 @@ list :  statement ';'
      | FOR '(' loop ')' '{' list '}'
      | list FOR '(' loop ')' '{' list '}'
      ;
-/* [[[[[de rezolvat conditiile]]]]] */
 loop : statement ';' condition ';' statement
      ;
 condition : expr 
@@ -112,21 +138,18 @@ statement : ID ASSIGN expr {
                               {
                                  yyerror();
                                  printf("Variabila nedeclarata\n");
-                              }
-                              else assignInt($1, $3);
+                              } else assignInt($1, $3);
                            }
           | ID ASSIGN ID {
                            if(checkDeclared($1) == -1)
                            {
                               yyerror();
                               printf("Variabila nedeclarata\n");
-                           }
-                           if(checkDeclared($3) == -1)
+                           } if(checkDeclared($3) == -1)
                            {
                               yyerror();
                               printf("Variabila nedeclarata\n");
-                           }
-                           if(assignID($1, $3) == -1)
+                           } if(assignID($1, $3) == -1)
                            {
                               yyerror();
                               printf("Variabilele nu sunt de acelasi tip\n");
@@ -137,11 +160,16 @@ statement : ID ASSIGN expr {
                               {
                                  yyerror();
                                  printf("Variabila nedeclarata\n");
+                              } else { assignString($1, $3);}
                               }
-                              else { assignString($1, $3);}
-                              }
-          | ID ASSIGN 'new' ID '(' ')'
           | ID '(' lista_apel ')'
+          | ID ASSIGN ID '(' lista_apel ')' {
+                                             if(checkFunctDeclared($3) == -1)
+                                             {
+                                                yyerror();
+                                                printf("Functie nedeclarata");
+                                             } else assignFunct($1, $3); 
+                                            }
           | TIP ID { 
                if (checkDeclared ($2) == -1)
                          declare ($2, $1); 
@@ -149,6 +177,7 @@ statement : ID ASSIGN expr {
                          printf ("Variabila deja declarata\n");
                     }
              }
+          | OBJECT ID {  }
           | PRINT '(' ID ')' { Print("", $3); }
           | PRINT '(' STRING ',' ID ')' { Print($3, $5); }
           | PRINTTAB {printTab();}
@@ -157,7 +186,7 @@ expr : NR {$$ = $1;}
      | ID {$$ = $1;}
      | ID '(' lista_apel ')'
      | expr '+' expr {
-                      $$ = $1 + $3;     
+                      $$ = $1 + $3; 
                       }
      | expr '-' expr {
                       $$ = $1 - $3;     
@@ -217,70 +246,6 @@ lista_apel : expr
            | lista_apel ',' expr
            ;
 %%
-
-symtab* assign(int value, char* nume)
-{
-   symtab* id = (symtab*)malloc(sizeof(symtab));
-   id->valoare = value;
-   return id;
-}
-
-int print_var_info(symtab* id)
-{
-   printf("ID %s with value:%d\n",id->nume, id->valoare);
-   return id->valoare;
-}
-
-expr_info* create_bool_expr(int value)
-{
-   expr_info* expr = (expr_info*)malloc(sizeof(expr_info));
-   expr->intvalue = 0;
-   if(value)
-      expr->intvalue = 1;
-   expr->type = 1;
-   return expr;   
-}
-
-expr_info* create_int_expr(int value)
-{
-   expr_info* expr = (expr_info*)malloc(sizeof(expr_info));
-   expr->intvalue = value;
-   expr->type = 1;
-   return expr;
-}
-
-expr_info* create_str_expr(char* value1) 
-{
-   expr_info* expr = (expr_info*)malloc(sizeof(expr_info));
-   expr->strvalue = (char*)malloc(sizeof(char)); 
-   expr->strvalue = value1;
-   expr->type = 2;
-   return expr;		
-}
-
-void free_expr(expr_info* expr)
-{
-  if(expr->type == 2)
-  {
-     free(expr->strvalue);
-  }
-  free(expr);
-}
-
-
-void print_expr(expr_info* expr)
-{
-   printf("Exor %s with value:%d\n",expr->strvalue, expr->intvalue);
-   // if(expr->type == 1) 
-   // {
-	// printf("Int expr with value:%d\n",expr->intvalue);
-   // }
-   // else
-   // {
-	// printf("Str expr with value:%s\n", expr->strvalue);	
-   // }	
-
-}
 
 int yyerror(char * s){
 printf("eroare: %s la linia:%d\n",s,yylineno);

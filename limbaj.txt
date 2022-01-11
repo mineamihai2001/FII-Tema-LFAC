@@ -1,10 +1,10 @@
-int i;
+int i=999;
 int j;
 int k;
 int ceva;
-int a[100];
-class Object{
+class <Object>{
 private:
+    int array[100];
     int x;
 public:
     int y;
@@ -19,20 +19,31 @@ int f (int a, char b, float c)
     y=x;
     print("y egal cu", y);
     int r;
+    r=10;
     return r;
 }
-int h(int list)
+int g(int param)
 {
-    int counter;
-    return counter;
+    int value;
+    return value;
+}
+char h(int list)
+{
+    int word;
+    word = "word";
+    return word;
 }
 main()
 {
-    int p;
+    <Object> person;
+    float p;
+    int temp;
+    temp = f(1, 2, 3);
+    print("temp este egal cu", temp);
     int q;
     int z;
     char w;
-    w = "ceva";
+    w = h(10);
     print(w);
     p=!(12|0&(2&3));
     if(x @neq 0)
@@ -45,9 +56,10 @@ main()
     {
         x=6;
     }
-    for(i=7;j;k=8)
+    for(i=7;j @le 10;k=1+2)
     {
         i=9;
     }
+
     print_tab();
 }

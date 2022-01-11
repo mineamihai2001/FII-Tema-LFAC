@@ -4,18 +4,25 @@
 #include <errno.h>
 #include <stdarg.h>
 
+typedef struct AST
+{
+    int operator_type, value;
+    char *operator;
+    struct AST *left_tree;
+    struct AST *right_tree;
+} AST;
+
 typedef struct expr_info
 {
     int intvalue;
-    char *strvalue;
     int type;
+    AST *tree;
 } expr_info;
 
 typedef struct symtab
 {
     int valoare;
     char *nume;
-    int tip;
 } symtab;
 
 struct var
@@ -35,11 +42,24 @@ struct funct
     float floatvalue;
     char *charvalue;
     char name[1024];
-    int type; // 0-void, 1-int, 2-char, 3-float
+    int type; // 1-int, 2-char, 3-float
     int init; // is initialized
     int paramCounter;
     struct var params[16];
 } functTab[128];
+
+struct scope
+{
+    struct var members[64];
+    struct funct methods[64];
+};
+
+struct class
+{
+    char *name;
+    struct scope private;
+    struct scope public;
+} class[128];
 
 int varCounter = 0;
 int functCounter = 0;
@@ -58,7 +78,7 @@ void assignString(char varName[], char *val)
     varTab[i].charvalue = val;
 }
 
-void createFunction(char functName[], char *type)
+void createFunction(char functName[], char *type, char varName[])
 {
     strcpy(functTab[functCounter].name, functName);
     // printf("%s creat %d\n", functTab[functCounter].name, functCounter);
@@ -67,10 +87,17 @@ void createFunction(char functName[], char *type)
     //         printf("FCT: %s\tparam: %d\t counter: %d\n", functTab[functCounter].name, i, functCounter);
 
     // }
+    int i = checkDeclared(varName);
     if (strcmp(type, "int") == 0)
+    {
         functTab[functCounter].type = 1;
+        functTab[functCounter].intvalue = varTab[i].intvalue;
+    }
     else if (strcmp(type, "char") == 0)
+    {
         functTab[functCounter].type = 2;
+        functTab[functCounter].charvalue = varTab[i].charvalue;
+    }
     else if (strcmp(type, "float") == 0)
         functTab[functCounter].type = 3;
     ++functCounter;
@@ -97,12 +124,11 @@ void addParam(char paramName[], char *type)
     functTab[functCounter].paramCounter++;
 }
 
-void createClass(char className[], char *val)
+void createClass(char className[])
 {
-    strcpy(varTab[varCounter].name, className);
-    varTab[varCounter].init = 1;
-    strcpy(varTab[varCounter].charvalue, val);
-    varCounter++;
+    //...add class name to the class[i] struct
+
+    //...add members and methods to each scope[i] struct
 }
 
 void declare(char varName[], char *type)
@@ -154,6 +180,7 @@ int checkFunctDeclared(char functName[])
         {
             return i;
         }
+    
     return -1;
 }
 
@@ -178,6 +205,29 @@ int assignID(char x[], char y[])
         return -1;
     return 0;
 }
+
+int assignFunct(char varName[], char functName[])
+{
+    int i = checkDeclared(varName);
+    int j = checkFunctDeclared(functName);
+
+    if (varTab[i].type == functTab[j].type)
+    {
+        if (varTab[i].type == 1) // int
+        {
+            // printf("%s (%d) = %s (%d)\n",  varTab[i].name, varTab[i].intvalue, functName, functTab[j].intvalue);
+            varTab[i].intvalue = functTab[j].intvalue;
+        }
+        else if (varTab[i].type == 2) // char
+        {
+            varTab[i].charvalue = functTab[j].charvalue;
+        }
+    }
+    else
+        return -1;
+    return 0;
+}
+
 void Print(char *string, char *variable)
 {
     for (int i = 0; i < varCounter; ++i)
@@ -239,7 +289,7 @@ int printTab()
         if (functTab[i].type == 1)
             fprintf(fctTab, "int %s (", functTab[i].name);
         else if (functTab[i].type == 2)
-            fprintf(fctTab, "char %s ", functTab[i].name);
+            fprintf(fctTab, "char %s (", functTab[i].name);
         int length = functTab[i].paramCounter;
         for (int j = 0; j < length - 1; ++j)
         {
@@ -262,3 +312,46 @@ int printTab()
     fclose(fctTab);
     return 1;
 }
+
+
+
+
+symtab *assign(int value, char *nume)
+{
+    symtab *id = (symtab *)malloc(sizeof(symtab));
+    id->valoare = value;
+    return id;
+}
+
+int print_var_info(symtab *id)
+{
+    printf("ID %s with value:%d\n", id->nume, id->valoare);
+    return id->valoare;
+}
+
+expr_info *create_bool_expr(int value)
+{
+    expr_info *expr = (expr_info *)malloc(sizeof(expr_info));
+    expr->intvalue = 0;
+    if (value)
+        expr->intvalue = 1;
+    expr->type = 1;
+    return expr;
+}
+
+expr_info *create_int_expr(int value)
+{
+    expr_info *expr = (expr_info *)malloc(sizeof(expr_info));
+    expr->intvalue = value;
+    expr->type = 1;
+    return expr;
+}
+
+// void free_expr(expr_info* expr)
+// {
+//   if(expr->type == 2)
+//   {
+//      free(expr->strvalue);
+//   }
+//   free(expr);
+// }

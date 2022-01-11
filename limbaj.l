@@ -21,6 +21,7 @@
 "while" {return WHILE;}
 "for" {return FOR;}
 "main()" {return MAIN;}
+\<[_a-zA-Z ][_a-zA-Z0-9 ]*\> {yylval.nume = strdup(yytext); return OBJECT;}
 \"[_a-zA-Z ][_a-zA-Z0-9 ]*\" {yylval.nume = strdup(yytext); return STRING;}
 [_a-zA-Z][_a-zA-Z0-9]* {yylval.nume=strdup(yytext); return ID;}
 "=" {return ASSIGN;}

@@ -1,2 +1,3 @@
 int f (int a, char b, float c)
-int h (int list)
+int g (int param)
+char h (int list)

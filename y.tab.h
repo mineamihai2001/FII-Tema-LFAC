@@ -69,7 +69,8 @@ extern int yydebug;
     TIP = 275,
     NR = 276,
     STRING = 277,
-    ID = 278
+    ID = 278,
+    OBJECT = 279
   };
 #endif
 /* Tokens.  */
@@ -94,6 +95,7 @@ extern int yydebug;
 #define NR 276
 #define STRING 277
 #define ID 278
+#define OBJECT 279
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -104,8 +106,9 @@ union YYSTYPE
       int valoare;
       char* string;
       char* nume;
+      struct expr_info *expr_info;
 
-#line 109 "y.tab.h"
+#line 112 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
